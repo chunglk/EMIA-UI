@@ -29,6 +29,32 @@ def suggesttime(cga,df):    #helper function
   index=df.index[index]
   return round(df['time'][index]*1.1,-1)
 
+def newcheckdeadlinefighter(user):
+  now=datetime.datetime.now()
+  now=now.timestamp()
+  df=pd.read_csv('hwtime.csv',index_col=[0])  #df is the whole dataframe
+  df1=df[df['userid']==user]  #df1:the hw submitted by user
+  df1=df1.sort_values(by=['timehandin'])
+  deadline=[]
+  percentage=[]
+  initialpercentage=[]
+  for i in df1.index:
+    course=df1['coursecode'][i]
+    index=df1['hwindex'][i]
+    df2=df[df['coursecode']==course]
+    df2=df2[df2['hwindex']==index]    #df2:all the people handing in the same hw
+    hours=int((df2['timehandin'].max()-df1['timehandin'][i])/3600)
+    deadline=deadline+[hours]
+    percentage+=[df2['timehandin'].rank(pct=True)[i]]
+  for i in range(len(df1)):
+    initialpercentage+=[1-sum(percentage[0:i+1])/(i+1)]
+  plt.plot(df1['coursecode']+df1['hwindex'],initialpercentage)
+  plt.title("graph showing how deadline fighter you are")
+  plt.xlabel('the percentage of deadline fighter when you finish this hw')
+  plt.ylabel('the percentage of you being a deadline fighter')
+  plt.show()
+  plt.savefig("homework.png")
+
 def serachcourse_withoutgraph(coursecode,index,cga): #input parameter and return max,min and suggest time,boolean value represent does it find the course and print the graph
   df1=pd.read_csv('hwtime.csv')         #0utput those max min and suggest tme in the UI
   df2=df1[(df1['coursecode']==coursecode)]
