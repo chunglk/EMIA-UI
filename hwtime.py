@@ -22,6 +22,16 @@ import datetime                           #show user how he finish his work
 
 
 """define function"""
+def gethw():
+  df=pd.read_csv('hwtime.csv',index_col=[0])
+  #print(df)
+  df1=pd.unique(df['coursecode'])
+  dictionary={}
+  for i in df1:
+    df2=df[df['coursecode']==i]
+    df2=pd.unique(df2['hwindex'])
+    dictionary[i]=list(df2)
+  return dictionary
 
 def suggesttime(cga,df):    #helper function
   percentagetile=1-((cga-2.0)/2.0)
