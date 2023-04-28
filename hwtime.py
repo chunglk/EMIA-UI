@@ -39,18 +39,19 @@ def serachcourse_withoutgraph(coursecode,index,cga): #input parameter and return
   values, base = np.histogram(df2['time'], bins=10)
   base=base[:-1]
   cumulative = np.cumsum(values)
+  cumulative=cumulative/cumulative[-1]
   plt.plot(base,cumulative)
   #xnew = np.linspace(base.min(), base.max(), 100)      #can smooth the graph(but will change it into non cumulative graph)
   #power_smooth = make_interp_spline(base,cumulative)(xnew)
   #plt.plot(xnew, power_smooth)
   plt.xlabel("time to finish/minutes")
-  ax = plt.gca()
-  ax.get_yaxis().set_visible(False) #clear the yaxis
+  plt.ylabel("percentagetile")
+  plt.title('past data of '+coursecode+' '+index)
   #plt.show()
   print('Maximum of time used in the homework by past data:',df2['time'].max(),'minutes')
   print('Minimum of time used in the homework by past data:',df2['time'].min(),'minutes')
   print('suggest time for you to do the homework:',suggesttime(cga,df2))
-  return int(df2['time'].min()), int(df2['time'].max()), int(suggesttime(cga,df2)),True
+  return int(df2['time'].min()), int(df2['time'].max()), int(suggesttime(cga,df2)),True,int(df2['time'].mean())
 
 def serachcourse_withgraph(coursecode,index,cga): #input parameter and return max,min and suggest time,boolean value represent does it find the course and print the graph
   df1=pd.read_csv('hwtime.csv')         #0utput those max min and suggest tme in the UI
@@ -62,13 +63,16 @@ def serachcourse_withgraph(coursecode,index,cga): #input parameter and return ma
   values, base = np.histogram(df2['time'], bins=10)
   base=base[:-1]
   cumulative = np.cumsum(values)
+  cumulative=cumulative/cumulative[-1]
   plt.plot(base,cumulative)
   #xnew = np.linspace(base.min(), base.max(), 100)      #can smooth the graph(but will change it into non cumulative graph)
   #power_smooth = make_interp_spline(base,cumulative)(xnew)
   #plt.plot(xnew, power_smooth)
   plt.xlabel("time to finish/minutes")
-  ax = plt.gca()
-  ax.get_yaxis().set_visible(False) #clear the yaxis
+  plt.ylabel("percentagetile")
+  plt.title('past data of '+coursecode+' '+index)
+  #ax = plt.gca()
+  #ax.get_yaxis().set_visible(False) #clear the yaxis
   #plt.show()
   plt.savefig("homework.png")
 
